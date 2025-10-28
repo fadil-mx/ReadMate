@@ -1,5 +1,6 @@
-import { Check, Code, Copy, Download, Eye, GitMerge } from 'lucide-react'
-import React from 'react'
+'use client'
+import { Check, Code, Copy, Download, Eye, GitMerge, User } from 'lucide-react'
+import React, { useState } from 'react'
 import { Button } from '../ui/button'
 
 type header = {
@@ -17,6 +18,7 @@ const Header = ({
   copied,
   view,
 }: header) => {
+  const [login, setlogin] = useState<boolean>(false)
   return (
     <div className='bg-white border-b border-gray-200 shadow-sm'>
       <div className='px-6 py-4 flex items-center justify-between'>
@@ -78,6 +80,13 @@ const Header = ({
             >
               <Download className='w-4 h-4' />
               Download
+            </Button>
+          </div>
+          <div className=''>
+            <Button className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'>
+              <User className='w-4 h-4' />
+
+              {login ? 'logout' : 'Sign-in'}
             </Button>
           </div>
         </div>
