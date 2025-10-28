@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Plus, Trash2, GripVertical } from 'lucide-react'
 import Header from '@/components/header'
 import { EN_Markdown } from '@/lib/data'
@@ -10,6 +10,7 @@ export default function ReadmeBuilder() {
   const [activeSection, setActiveSection] = useState(sections[0].id)
   const [view, setView] = useState('split')
   const [copied, setCopied] = useState(false)
+  const [dragindex, setdragindex] = useState<number | null>(null)
 
   const activeContent = sections.find((s) => s.id === activeSection)
 
@@ -59,6 +60,24 @@ export default function ReadmeBuilder() {
   const availableSections = EN_Markdown.filter(
     (template) => !sections.some((s) => s.name === template.name)
   )
+
+  //handle drageffect
+  const handleDragStart = (index: number) => {
+    setdragindex(index)
+  }
+
+  const handleDrop = (index: number) => {
+    // console.log('Dropped at index:', index)
+    // console.log(' dragging index:', dragindex)
+    const item = [...sections]
+    if (dragindex) {
+      const dragitem = item[dragindex]
+      item.splice(dragindex, 1)
+      item.splice(index, 0, dragitem)
+      setSections(item)
+      setdragindex(null)
+    }
+  }
 
   return (
     <div className='h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50'>
@@ -227,9 +246,15 @@ export default function ReadmeBuilder() {
           <div className='p-4 border-b border-gray-200'>
             <h2 className='font-semibold text-gray-700 mb-3'>Your Sections</h2>
             <div className='space-y-1'>
-              {sections.map((section) => (
+              {sections.map((section, index) => (
                 <div
-                  key={section.name}
+                  draggable='true'
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                  }}
+                  onDrop={() => handleDrop(index)}
+                  key={section.id}
                   className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-all ${
                     activeSection === section.id
                       ? 'bg-blue-100 border border-blue-300'
