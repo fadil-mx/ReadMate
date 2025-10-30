@@ -4,6 +4,8 @@ import { Plus, Trash2, GripVertical } from 'lucide-react'
 import Header from '@/components/header'
 import { EN_Markdown } from '@/lib/data'
 import MarkdownPreview from '@/components/markdown/Markdown'
+import { Button } from '@/components/ui/button'
+import hookdDraft from '@/hooks/draft-hook'
 
 export default function ReadmeBuilder() {
   const [sections, setSections] = useState(EN_Markdown.slice(0, 3))
@@ -78,6 +80,9 @@ export default function ReadmeBuilder() {
       setdragindex(null)
     }
   }
+
+  //hooks
+  const { saveDraft } = hookdDraft()
 
   return (
     <div className='h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50'>
@@ -313,9 +318,19 @@ export default function ReadmeBuilder() {
           {view !== 'preview' && (
             <div className='flex-1 flex flex-col bg-white border-r border-gray-200'>
               <div className='p-4 border-b border-gray-200 bg-gray-50'>
-                <h3 className='font-semibold text-gray-700 flex items-center gap-2'>
-                  <span className='text-lg'>{activeContent?.icon}</span>
-                  {activeContent?.name}
+                <h3 className='font-semibold text-gray-700 flex items-center justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <span className='text-lg'>{activeContent?.icon}</span>
+                    {activeContent?.name}
+                  </div>
+                  <Button
+                    onClick={() => {
+                      saveDraft(sections, activeSection, 'My Draft 1')
+                    }}
+                    className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'
+                  >
+                    Save Draft
+                  </Button>
                 </h3>
               </div>
               <textarea

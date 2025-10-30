@@ -82,13 +82,13 @@ const Header = ({
               Download
             </Button>
           </div>
-          <div className=''>
+          {/* <div className=''>
             <Button className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'>
               <User className='w-4 h-4' />
 
               {login ? 'logout' : 'Sign-in'}
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
