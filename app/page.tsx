@@ -1,11 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, GripVertical } from 'lucide-react'
+import { Plus, Trash2, GripVertical, FolderOpen, Save } from 'lucide-react'
 import Header from '@/components/header'
 import { EN_Markdown } from '@/lib/data'
 import MarkdownPreview from '@/components/markdown/Markdown'
 import { Button } from '@/components/ui/button'
 import hookdDraft from '@/hooks/draft-hook'
+import SaveDraft from '@/components/shared/SaveDraft'
+import LoadDraftModal from '@/components/shared/LoadDraft'
+import LoadDraft from '@/components/shared/LoadDraft'
 
 export default function ReadmeBuilder() {
   const [sections, setSections] = useState(EN_Markdown.slice(0, 3))
@@ -13,8 +16,17 @@ export default function ReadmeBuilder() {
   const [view, setView] = useState('split')
   const [copied, setCopied] = useState(false)
   const [dragindex, setdragindex] = useState<number | null>(null)
+  const [showsavemodel, setshowsavemodel] = useState(false)
+  const [showloadmodel, setshowloadmodel] = useState(false)
 
+  const {
+    datas: { draft, currentDraftid },
+    saveDraft,
+  } = hookdDraft()
+
+  //active content and draftdata
   const activeContent = sections.find((s) => s.id === activeSection)
+  const currentDraftdata = draft.find((d) => d.id === currentDraftid)
 
   const updateSection = (id: string, newMarkdown: string) => {
     setSections(
@@ -81,8 +93,11 @@ export default function ReadmeBuilder() {
     }
   }
 
-  //hooks
-  const { saveDraft } = hookdDraft()
+  useEffect(() => {
+    console.log(draft)
+
+    console.log('Current Draft Data:', currentDraftdata)
+  }, [currentDraftdata])
 
   return (
     <div className='h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50'>
@@ -323,14 +338,13 @@ export default function ReadmeBuilder() {
                     <span className='text-lg'>{activeContent?.icon}</span>
                     {activeContent?.name}
                   </div>
-                  <Button
-                    onClick={() => {
-                      saveDraft(sections, activeSection, 'My Draft 1')
-                    }}
-                    className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'
-                  >
-                    Save Draft
-                  </Button>
+                  <div className='flex items-center gap-5'>
+                    <LoadDraft />
+                    <SaveDraft
+                      sections={sections}
+                      activeSection={activeSection}
+                    />
+                  </div>
                 </h3>
               </div>
               <textarea

@@ -19,6 +19,7 @@ type DraftItem = {
 
 type Datas = {
   draft: DraftItem[]
+  currentDraftid: string | null
 }
 
 interface DraftStore {
@@ -32,6 +33,7 @@ interface DraftStore {
 
 const inintialData: Datas = {
   draft: [],
+  currentDraftid: null,
 }
 
 const hookdDraft = create(
@@ -52,6 +54,7 @@ const hookdDraft = create(
           datas: {
             ...get().datas,
             draft: [...draft, newdraft],
+            currentDraftid: newdraft.id,
           },
         })
       },
