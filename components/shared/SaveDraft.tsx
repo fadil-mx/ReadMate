@@ -34,12 +34,7 @@ const SaveDraft = ({ sections, activeSection }: saveDraft) => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button
-            onClick={() => {
-              //   saveDraft(sections, activeSection, 'My Draft 1')
-            }}
-            className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all flex items-center gap-2 shadow-sm'
-          >
+          <Button className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all flex items-center gap-2 shadow-sm'>
             <Save className='w-4 h-4' />
             Save Draft
           </Button>
@@ -54,7 +49,7 @@ const SaveDraft = ({ sections, activeSection }: saveDraft) => {
                     type='text'
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    // onKeyPress={(e) => e.key === 'Enter' && handleSave()}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSave()}
                     placeholder='E-commerce Project README'
                     className='text-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
                     autoFocus

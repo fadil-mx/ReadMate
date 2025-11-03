@@ -27,7 +27,7 @@ interface DraftStore {
   saveDraft: (sections: Section[], activesection: string, name: string) => void
   updateDraft: () => void
   loaddraft: () => void
-  deleteDraft: () => void
+  deleteDraft: (id: string) => void
   clearDraft: () => void
 }
 
@@ -60,7 +60,16 @@ const hookdDraft = create(
       },
       updateDraft: () => {},
       loaddraft: () => {},
-      deleteDraft: () => {},
+      deleteDraft: (id: string) => {
+        const { draft } = get().datas
+        const updatedDrafts = draft.filter((d) => d.id !== id)
+        set({
+          datas: {
+            ...get().datas,
+            draft: updatedDrafts,
+          },
+        })
+      },
       clearDraft: () => {},
     }),
     { name: 'draft-hook' }
