@@ -25,7 +25,7 @@ type Datas = {
 interface DraftStore {
   datas: Datas
   saveDraft: (sections: Section[], activesection: string, name: string) => void
-  updateDraft: () => void
+  updateDraft: (id: string, name: string) => void
   loaddraft: () => void
   deleteDraft: (id: string) => void
   clearDraft: () => void
@@ -58,8 +58,24 @@ const hookdDraft = create(
           },
         })
       },
-      updateDraft: () => {},
-      loaddraft: () => {},
+      updateDraft: (id: string, name: string) => {
+        const { draft } = get().datas
+        const updatedDrafts = draft.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                name,
+                updatedAt: new Date().toISOString(),
+              }
+            : item
+        )
+        set({
+          datas: {
+            ...get().datas,
+            draft: updatedDrafts,
+          },
+        })
+      },
       deleteDraft: (id: string) => {
         const { draft } = get().datas
         const updatedDrafts = draft.filter((d) => d.id !== id)
@@ -70,6 +86,8 @@ const hookdDraft = create(
           },
         })
       },
+      loaddraft: () => {},
+
       clearDraft: () => {},
     }),
     { name: 'draft-hook' }

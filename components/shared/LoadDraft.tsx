@@ -16,12 +16,13 @@ import { formatTimeAgo } from '@/lib/utils'
 
 const LoadDraft = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [renamingId, setRenamingId] = useState(null)
+  const [renamingId, setRenamingId] = useState('')
   const [newName, setNewName] = useState('')
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const {
     datas: { draft },
     deleteDraft,
+    updateDraft,
   } = hookdDraft()
 
   return (
@@ -32,7 +33,7 @@ const LoadDraft = () => {
             <FolderOpen className='w-4 h-4' />
             My Drafts
             {draft.length > 0 && (
-              <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'>
+              <span className='absolute -top-1.5 -right-1.5 font-bold bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'>
                 {draft.length}
               </span>
             )}
@@ -67,40 +68,53 @@ const LoadDraft = () => {
                       {draft.map((draft) => (
                         <div key={draft.id} className=''>
                           {renamingId === draft.id ? (
-                            <div className='flex gap-2 mb-2'>
+                            <div className='flex gap-2 mb-2 mt-4 border border-gray-300 py-3 px-2 rounded-lg items-center bg-white shadow-sm'>
                               <Input
                                 type='text'
                                 value={newName}
                                 onChange={(e) => setNewName(e.target.value)}
-                                //   onKeyPress={(e) => e.key === 'Enter' && handleRename(draft.id)}
-                                className='flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                className='flex-1 text-gray-800 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                                 autoFocus
                               />
-                              <button
-                                //   onClick={() => handleRename(draft.id)}
-                                className='px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700'
-                              >
-                                <Check className='w-4 h-4' />
-                              </button>
-                              <button
+
+                              <Button
                                 onClick={() => {
-                                  setRenamingId(null)
+                                  updateDraft(draft.id, newName)
+                                  setRenamingId('')
                                   setNewName('')
                                 }}
-                                className='px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300'
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    updateDraft(draft.id, newName)
+                                    setRenamingId('')
+                                    setNewName('')
+                                  }
+                                }}
+                                className='px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors'
+                              >
+                                <Check className='w-4 h-4' />
+                              </Button>
+
+                              <Button
+                                onClick={() => {
+                                  setRenamingId('')
+                                  setNewName('')
+                                }}
+                                className='px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors'
                               >
                                 <X className='w-4 h-4' />
-                              </button>
+                              </Button>
                             </div>
                           ) : (
                             <div className='mt-5 border  p-2 rounded-lg flex  justify-between items-center cursor-pointer hover:bg-gray-100'>
                               <div className=''>
-                                <div className=' flex gap-3 '>
-                                  <span className=' text-2xl'>📝</span>
-                                  <h1 className='text-black font-semibold text-lg'>
+                                <div className='flex gap-3 items-center'>
+                                  <span className='text-2xl'>📝</span>
+                                  <h1 className='text-black font-semibold text-lg truncate max-w-[150px]'>
                                     {draft.name}
                                   </h1>
                                 </div>
+
                                 <p className='text-sm text-gray-500 flex items-center gap-1 mt-1'>
                                   <Clock className='w-3 h-3' />
                                   Updated:
@@ -108,10 +122,16 @@ const LoadDraft = () => {
                                 </p>
                               </div>
                               <div className=' flex gap-2'>
-                                <Button className=' px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'>
+                                <Button className=' bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'>
                                   Load
                                 </Button>
-                                <Button className='px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors'>
+                                <Button
+                                  onClick={() => {
+                                    setRenamingId(draft.id)
+                                    setNewName(draft.name)
+                                  }}
+                                  className=' bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors'
+                                >
                                   Edit{' '}
                                 </Button>
 
