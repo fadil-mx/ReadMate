@@ -25,6 +25,10 @@ const LoadDraft = () => {
     updateDraft,
   } = hookdDraft()
 
+  const drafts = draft.filter((data) =>
+    data.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -58,14 +62,14 @@ const LoadDraft = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <div className=''>
-                  {draft.length === 0 ? (
+                  {drafts.length === 0 ? (
                     <div className='text-center py-8 text-gray-500'>
                       <FolderOpen className='w-12 h-12 mx-auto mb-2 opacity-50' />
                       <p>No drafts found</p>
                     </div>
                   ) : (
                     <div className='mt-5 overflow-y-auto max-h-[378px]  pr-2'>
-                      {draft.map((draft) => (
+                      {drafts.map((draft) => (
                         <div key={draft.id} className=''>
                           {renamingId === draft.id ? (
                             <div className='flex gap-2 mb-2 mt-4 border border-gray-300 py-3 px-2 rounded-lg items-center bg-white shadow-sm'>
