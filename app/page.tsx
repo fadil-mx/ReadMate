@@ -9,6 +9,7 @@ import hookdDraft from '@/hooks/draft-hook'
 import SaveDraft from '@/components/shared/SaveDraft'
 import LoadDraftModal from '@/components/shared/LoadDraft'
 import LoadDraft from '@/components/shared/LoadDraft'
+import { DraftItemType } from '@/types/types'
 
 export default function ReadmeBuilder() {
   const [sections, setSections] = useState(EN_Markdown.slice(0, 3))
@@ -21,12 +22,11 @@ export default function ReadmeBuilder() {
 
   const {
     datas: { draft, currentDraftid },
-    saveDraft,
   } = hookdDraft()
 
   //active content and draftdata
   const activeContent = sections.find((s) => s.id === activeSection)
-  const currentDraftdata = draft.find((d) => d.id === currentDraftid)
+  // const currentDraftdata = draft.find((d) => d.id === currentDraftid)
 
   const updateSection = (id: string, newMarkdown: string) => {
     setSections(
@@ -93,11 +93,10 @@ export default function ReadmeBuilder() {
     }
   }
 
-  useEffect(() => {
-    console.log(draft)
-
-    console.log('Current Draft Data:', currentDraftdata)
-  }, [currentDraftdata])
+  const handleLoadDraft = (draftdata: DraftItemType) => {
+    setSections(draftdata.sections)
+    setActiveSection(draftdata.activesection)
+  }
 
   return (
     <div className='h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50'>
@@ -339,7 +338,7 @@ export default function ReadmeBuilder() {
                     {activeContent?.name}
                   </div>
                   <div className='flex items-center gap-5'>
-                    <LoadDraft />
+                    <LoadDraft onLoadDraft={handleLoadDraft} />
                     <SaveDraft
                       sections={sections}
                       activeSection={activeSection}

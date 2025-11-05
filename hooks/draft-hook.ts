@@ -26,7 +26,7 @@ interface DraftStore {
   datas: Datas
   saveDraft: (sections: Section[], activesection: string, name: string) => void
   updateDraft: (id: string, name: string) => void
-  loaddraft: () => void
+  loaddraft: (draftId: string) => void
   deleteDraft: (id: string) => void
   clearDraft: () => void
 }
@@ -41,7 +41,8 @@ const hookdDraft = create(
     (set, get) => ({
       datas: inintialData,
       saveDraft: (sections: Section[], activesection: string, name: string) => {
-        const { draft } = get().datas
+        const { draft, currentDraftid } = get().datas
+        const existingDraft = draft.find((d) => d.id === currentDraftid)
         const newdraft = {
           id: `draft-${Date.now()}`,
           name,
@@ -50,10 +51,24 @@ const hookdDraft = create(
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }
+        const updatedDraft = existingDraft
+          ? draft.map((d) =>
+              d.id === currentDraftid
+                ? {
+                    ...d,
+                    name,
+                    sections,
+                    activesection,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : d
+            )
+          : [...draft, newdraft]
+
         set({
           datas: {
             ...get().datas,
-            draft: [...draft, newdraft],
+            draft: updatedDraft,
             currentDraftid: newdraft.id,
           },
         })
@@ -86,7 +101,19 @@ const hookdDraft = create(
           },
         })
       },
-      loaddraft: () => {},
+      loaddraft: (draftId: string) => {
+        const { draft } = get().datas
+        const draftToLoad = draft.find((d) => d.id === draftId) || null
+        if (draftToLoad) {
+          set({
+            datas: {
+              ...get().datas,
+              currentDraftid: draftToLoad.id,
+            },
+          })
+        }
+        return draftToLoad
+      },
 
       clearDraft: () => {},
     }),

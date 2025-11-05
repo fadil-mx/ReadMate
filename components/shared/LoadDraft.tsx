@@ -13,8 +13,13 @@ import { Check, Clock, FolderOpen, X } from 'lucide-react'
 import hookdDraft from '@/hooks/draft-hook'
 import { Input } from '../ui/input'
 import { formatTimeAgo } from '@/lib/utils'
+import { DraftItemType } from '@/types/types'
 
-const LoadDraft = () => {
+type LoadDraftProps = {
+  onLoadDraft: (draftdata: DraftItemType) => void
+}
+
+const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [renamingId, setRenamingId] = useState('')
   const [newName, setNewName] = useState('')
@@ -28,6 +33,17 @@ const LoadDraft = () => {
   const drafts = draft.filter((data) =>
     data.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const handleLoadDraft = (draftId: string) => {
+    const newdraft = draft.find((d) => d.id === draftId)
+    if (newdraft) {
+      onLoadDraft(newdraft)
+      console.log(newdraft)
+      setOpen(false)
+    } else {
+      window.alert('Loaded draft not found for id:' + draftId)
+    }
+  }
 
   return (
     <div>
@@ -126,7 +142,10 @@ const LoadDraft = () => {
                                 </p>
                               </div>
                               <div className=' flex gap-2'>
-                                <Button className=' bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'>
+                                <Button
+                                  onClick={() => handleLoadDraft(draft.id)}
+                                  className=' bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'
+                                >
                                   Load
                                 </Button>
                                 <Button
@@ -134,7 +153,7 @@ const LoadDraft = () => {
                                     setRenamingId(draft.id)
                                     setNewName(draft.name)
                                   }}
-                                  className=' bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors'
+                                  className=' bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors'
                                 >
                                   Edit{' '}
                                 </Button>
