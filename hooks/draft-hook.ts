@@ -115,7 +115,14 @@ const hookdDraft = create(
         return draftToLoad
       },
 
-      clearDraft: () => {},
+      clearDraft: () => {
+        set({
+          datas: {
+            ...get().datas,
+            currentDraftid: null,
+          },
+        })
+      },
     }),
     { name: 'draft-hook' }
   )

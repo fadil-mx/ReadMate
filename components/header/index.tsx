@@ -1,7 +1,28 @@
 'use client'
-import { Check, Code, Copy, Download, Eye, GitMerge } from 'lucide-react'
+import {
+  Check,
+  Code,
+  Copy,
+  Download,
+  Eye,
+  GitMerge,
+  RotateCcw,
+} from 'lucide-react'
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import React from 'react'
 import { Button } from '../ui/button'
+import hookdDraft from '@/hooks/draft-hook'
 
 type header = {
   setView: React.Dispatch<React.SetStateAction<string>>
@@ -9,6 +30,7 @@ type header = {
   downloadMarkdown: () => void
   copied: boolean
   view: string
+  handleReset: () => void
 }
 
 const Header = ({
@@ -17,6 +39,7 @@ const Header = ({
   downloadMarkdown,
   copied,
   view,
+  handleReset,
 }: header) => {
   return (
     <div className='bg-white border-b border-gray-200 shadow-sm'>
@@ -81,13 +104,30 @@ const Header = ({
               Download
             </Button>
           </div>
-          {/* <div className=''>
-            <Button className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'>
-              <User className='w-4 h-4' />
-
-              {login ? 'logout' : 'Sign-in'}
-            </Button>
-          </div> */}
+          <div className=''>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button className='px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-all flex items-center gap-2 shadow-sm'>
+                  <RotateCcw className='w-4 h-4' />
+                  Reset
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will delete your Doc.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleReset}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </div>
     </div>

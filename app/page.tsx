@@ -22,6 +22,7 @@ export default function ReadmeBuilder() {
 
   const {
     datas: { draft, currentDraftid },
+    clearDraft,
   } = hookdDraft()
 
   //active content and draftdata
@@ -96,6 +97,12 @@ export default function ReadmeBuilder() {
   const handleLoadDraft = (draftdata: DraftItemType) => {
     setSections(draftdata.sections)
     setActiveSection(draftdata.activesection)
+  }
+
+  const handleReset = () => {
+    clearDraft()
+    setSections(EN_Markdown.slice(0, 3))
+    setActiveSection(EN_Markdown[0].id)
   }
 
   return (
@@ -257,6 +264,7 @@ export default function ReadmeBuilder() {
         downloadMarkdown={downloadMarkdown}
         view={view}
         copied={copied}
+        handleReset={handleReset}
       />
 
       <div className='flex-1 flex overflow-hidden'>
