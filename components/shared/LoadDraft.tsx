@@ -28,6 +28,7 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
     datas: { draft },
     deleteDraft,
     updateDraft,
+    loaddraft,
   } = hookdDraft()
 
   const drafts = draft.filter((data) =>
@@ -35,6 +36,7 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
   )
 
   const handleLoadDraft = (draftId: string) => {
+    loaddraft(draftId)
     const newdraft = draft.find((d) => d.id === draftId)
     if (newdraft) {
       onLoadDraft(newdraft)
@@ -49,7 +51,7 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className=' px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2 shadow-sm relative'>
+          <Button className=' px-4 py-2 cursor-pointer bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2 shadow-sm relative'>
             <FolderOpen className='w-4 h-4' />
             My Drafts
             {draft.length > 0 && (
@@ -110,7 +112,7 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
                                     setNewName('')
                                   }
                                 }}
-                                className='px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors'
+                                className='px-3 py-2 cursor-pointer bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors'
                               >
                                 <Check className='w-4 h-4' />
                               </Button>
@@ -120,7 +122,7 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
                                   setRenamingId('')
                                   setNewName('')
                                 }}
-                                className='px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors'
+                                className='px-3 py-2 cursor-pointer bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors'
                               >
                                 <X className='w-4 h-4' />
                               </Button>
@@ -144,7 +146,7 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
                               <div className=' flex gap-2'>
                                 <Button
                                   onClick={() => handleLoadDraft(draft.id)}
-                                  className=' bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'
+                                  className=' bg-blue-600 cursor-pointer text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'
                                 >
                                   Load
                                 </Button>
@@ -153,14 +155,14 @@ const LoadDraft = ({ onLoadDraft }: LoadDraftProps) => {
                                     setRenamingId(draft.id)
                                     setNewName(draft.name)
                                   }}
-                                  className=' bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors'
+                                  className=' bg-gray-200 cursor-pointer text-gray-700 rounded-lg hover:bg-gray-300 transition-colors'
                                 >
                                   Edit{' '}
                                 </Button>
 
                                 <Button
                                   onClick={() => deleteDraft(draft.id)}
-                                  className='px-3 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors'
+                                  className='px-3 py-1.5 cursor-pointer bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors'
                                 >
                                   Delete
                                 </Button>

@@ -105,6 +105,10 @@ export default function ReadmeBuilder() {
     setActiveSection(EN_Markdown[0].id)
   }
 
+  useEffect(() => {
+    clearDraft()
+  }, [clearDraft])
+
   return (
     <div className='h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-purple-50'>
       {/* GitHub Markdown CSS */}

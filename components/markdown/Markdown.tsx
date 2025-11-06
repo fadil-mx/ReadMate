@@ -33,9 +33,12 @@ const MarkdownPreview = ({ markdown }: { markdown: string }) => {
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
 
     // Lists
-    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>')
-    html = html.replace(/^- (.*$)/gim, '<li>$1</li>')
-    html = html.replace(/(<li>[\s\S]*<\/li>)/, '<ul>$1</ul>')
+    html = html.replace(/^\s*[-*+] (.*)$/gim, '<li>$1</li>')
+    html = html.replace(/(<li>[\s\S]*?<\/li>)(?=(?:\n(?!<li>))|$)/gim, '$1\n')
+    html = html.replace(
+      /(?:\s*<li>[\s\S]*?<\/li>\s*)+/gim,
+      (match) => `<ul>${match}</ul>`
+    )
 
     // Tables
     const tableRegex = /\|(.+)\|\n\|[-:\s|]+\|\n((?:\|.+\|\n?)+)/g

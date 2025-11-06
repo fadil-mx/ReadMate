@@ -61,7 +61,7 @@ const Header = ({
           <div className='flex bg-gray-100 rounded-lg p-1'>
             <button
               onClick={() => setView('split')}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-all ${
+              className={`px-3 py-1.5  cursor-pointer rounded text-sm font-medium transition-all ${
                 view === 'split'
                   ? 'bg-white shadow-sm text-blue-600'
                   : 'text-gray-600'
@@ -72,7 +72,7 @@ const Header = ({
             </button>
             <button
               onClick={() => setView('preview')}
-              className={`px-3 py-1.5 rounded text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 cursor-pointer rounded text-sm font-medium transition-all ${
                 view === 'preview'
                   ? 'bg-white shadow-sm text-blue-600'
                   : 'text-gray-600'
@@ -85,7 +85,7 @@ const Header = ({
           <div className=''>
             <Button
               onClick={copyToClipboard}
-              className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'
+              className='px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2 shadow-sm'
             >
               {copied ? (
                 <Check className='w-4 h-4' />
@@ -98,7 +98,7 @@ const Header = ({
           <div className=''>
             <Button
               onClick={downloadMarkdown}
-              className='px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2 shadow-sm'
+              className='px-4 py-2 cursor-pointer bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2 shadow-sm'
             >
               <Download className='w-4 h-4' />
               Download
@@ -107,7 +107,7 @@ const Header = ({
           <div className=''>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button className='px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-all flex items-center gap-2 shadow-sm'>
+                <Button className='px-4  py-2 cursor-pointer bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-all flex items-center gap-2 shadow-sm'>
                   <RotateCcw className='w-4 h-4' />
                   Reset
                 </Button>

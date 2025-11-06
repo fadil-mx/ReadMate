@@ -1,4 +1,4 @@
-'use cleint'
+'use client'
 import React, { useState } from 'react'
 import {
   Dialog,
@@ -20,10 +20,15 @@ type saveDraft = {
 }
 
 const SaveDraft = ({ sections, activeSection }: saveDraft) => {
-  const [name, setName] = useState<string>('')
+  const {
+    datas: { draft, currentDraftid },
+    saveDraft,
+  } = hookdDraft()
+  const currentDraftdata = draft.find((item) => item.id === currentDraftid)
+  const [name, setName] = useState<string>(
+    currentDraftdata ? currentDraftdata.name : ''
+  )
   const [open, setOpen] = useState<boolean>(false)
-
-  const { saveDraft } = hookdDraft()
 
   const handleSave = () => {
     saveDraft(sections, activeSection, name)
@@ -34,9 +39,9 @@ const SaveDraft = ({ sections, activeSection }: saveDraft) => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all flex items-center gap-2 shadow-sm'>
+          <Button className='px-4 py-2 cursor-pointer bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all flex items-center gap-2 shadow-sm'>
             <Save className='w-4 h-4' />
-            Save Draft
+            {currentDraftid ? 'Update Draft' : 'Save Draft'}
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -58,7 +63,7 @@ const SaveDraft = ({ sections, activeSection }: saveDraft) => {
                 <div className=' flex justify-end gap-2 mt-4'>
                   <Button
                     variant='outline'
-                    className='text-red-600
+                    className='text-red-600 cursor-pointer
                   '
                     onClick={() => {
                       setOpen(false)
@@ -69,7 +74,7 @@ const SaveDraft = ({ sections, activeSection }: saveDraft) => {
                   </Button>
                   <Button
                     onClick={() => handleSave()}
-                    className='bg-green-600 text-white hover:bg-green-700 flex items-center gap-2'
+                    className='bg-green-600 cursor-pointer text-white hover:bg-green-700 flex items-center gap-2'
                   >
                     <Save className='w-4 h-4' />
                     Save

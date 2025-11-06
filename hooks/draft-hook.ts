@@ -43,35 +43,43 @@ const hookdDraft = create(
       saveDraft: (sections: Section[], activesection: string, name: string) => {
         const { draft, currentDraftid } = get().datas
         const existingDraft = draft.find((d) => d.id === currentDraftid)
-        const newdraft = {
-          id: `draft-${Date.now()}`,
-          name,
-          sections,
-          activesection,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-        const updatedDraft = existingDraft
-          ? draft.map((d) =>
-              d.id === currentDraftid
-                ? {
-                    ...d,
-                    name,
-                    sections,
-                    activesection,
-                    updatedAt: new Date().toISOString(),
-                  }
-                : d
-            )
-          : [...draft, newdraft]
+        if (existingDraft) {
+          const updatedDrafts = draft.map((d) =>
+            d.id === currentDraftid
+              ? {
+                  ...d,
+                  name,
+                  sections,
+                  activesection,
+                  updatedAt: new Date().toISOString(),
+                }
+              : d
+          )
 
-        set({
-          datas: {
-            ...get().datas,
-            draft: updatedDraft,
-            currentDraftid: newdraft.id,
-          },
-        })
+          set({
+            datas: {
+              ...get().datas,
+              draft: updatedDrafts,
+            },
+          })
+        } else {
+          const newdraft = {
+            id: `draft-${Date.now()}`,
+            name,
+            sections,
+            activesection,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+
+          set({
+            datas: {
+              ...get().datas,
+              draft: [...draft, newdraft],
+              currentDraftid: newdraft.id,
+            },
+          })
+        }
       },
       updateDraft: (id: string, name: string) => {
         const { draft } = get().datas
