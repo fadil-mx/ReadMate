@@ -12,7 +12,7 @@ import LoadDraft from '@/components/shared/LoadDraft'
 import { DraftItemType } from '@/types/types'
 
 export default function ReadmeBuilder() {
-  const [sections, setSections] = useState(EN_Markdown.slice(0, 3))
+  const [sections, setSections] = useState(EN_Markdown.slice(0, 2))
   const [activeSection, setActiveSection] = useState(sections[0].id)
   const [view, setView] = useState('split')
   const [copied, setCopied] = useState(false)
