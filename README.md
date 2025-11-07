@@ -20,21 +20,15 @@ A modern, intuitive README generator that helps developers create professional d
 
 **Live Page:** [https://read-mate-seven.vercel.app/](https://read-mate-seven.vercel.app/)
 
-![Demo GIF](https://via.placeholder.com/800x450/0ea5e9/ffffff?text=Demo+GIF+Here)
-
 ## 📸 Screenshots
 
 ### Main Editor View
 
-![Editor](https://via.placeholder.com/800x400/0ea5e9/ffffff?text=Editor+View)
+![Editor](./public/2025-11-07-12-28-42.png)
 
 ### Draft Management
 
-![Drafts](https://via.placeholder.com/800x400/0ea5e9/ffffff?text=Draft+Manager)
-
-### Live Preview
-
-![Preview](https://via.placeholder.com/800x400/0ea5e9/ffffff?text=Live+Preview)
+![Drafts](./public/2025-11-07-12-37-03.png)
 
 ## 🚀 Getting Started
 
