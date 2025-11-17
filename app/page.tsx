@@ -1,13 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, GripVertical, FolderOpen, Save } from 'lucide-react'
+import { Plus, Trash2, GripVertical } from 'lucide-react'
 import Header from '@/components/header'
 import { EN_Markdown } from '@/lib/data'
 import MarkdownPreview from '@/components/markdown/Markdown'
-import { Button } from '@/components/ui/button'
 import hookdDraft from '@/hooks/draft-hook'
 import SaveDraft from '@/components/shared/SaveDraft'
-import LoadDraftModal from '@/components/shared/LoadDraft'
 import LoadDraft from '@/components/shared/LoadDraft'
 import { DraftItemType } from '@/types/types'
 
@@ -17,13 +15,8 @@ export default function ReadmeBuilder() {
   const [view, setView] = useState('split')
   const [copied, setCopied] = useState(false)
   const [dragindex, setdragindex] = useState<number | null>(null)
-  const [showsavemodel, setshowsavemodel] = useState(false)
-  const [showloadmodel, setshowloadmodel] = useState(false)
 
-  const {
-    datas: { draft, currentDraftid },
-    clearDraft,
-  } = hookdDraft()
+  const { clearDraft } = hookdDraft()
 
   //active content and draftdata
   const activeContent = sections.find((s) => s.id === activeSection)
