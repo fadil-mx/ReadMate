@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Plus, Trash2, GripVertical } from 'lucide-react'
+import { Plus, Trash2, GripVertical, Sparkles } from 'lucide-react'
 import Header from '@/components/header'
 import { EN_Markdown } from '@/lib/data'
 import MarkdownPreview from '@/components/markdown/Markdown'
@@ -8,6 +8,10 @@ import hookdDraft from '@/hooks/draft-hook'
 import SaveDraft from '@/components/shared/SaveDraft'
 import LoadDraft from '@/components/shared/LoadDraft'
 import { DraftItemType } from '@/types/types'
+import LocalAiEditor from '@/components/local_ai_editor/LocalAiEditor'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import EditorButton from '@/components/shared/ai-EditorButton'
 
 export default function ReadmeBuilder() {
   const [sections, setSections] = useState(EN_Markdown.slice(0, 2))
@@ -15,6 +19,7 @@ export default function ReadmeBuilder() {
   const [view, setView] = useState('split')
   const [copied, setCopied] = useState(false)
   const [dragindex, setdragindex] = useState<number | null>(null)
+  const [aiActivated, setAiActivated] = useState<boolean>(false)
 
   const { clearDraft } = hookdDraft()
 
@@ -338,11 +343,25 @@ export default function ReadmeBuilder() {
             <div className='flex-1 flex flex-col bg-white border-r border-gray-200'>
               <div className='p-4 border-b border-gray-200 bg-gray-50'>
                 <h3 className='font-semibold text-gray-700 flex items-center justify-between'>
-                  <div className='flex items-center gap-2'>
-                    <span className='text-lg'>{activeContent?.icon}</span>
-                    {activeContent?.name}
-                  </div>
-                  <div className='flex items-center gap-5'>
+                  {aiActivated ? (
+                    <div className='flex items-center gap-2'>
+                      <Sparkles className='w-5 h-5 text-purple-600' />
+                      <h3 className='font-semibold text-lg'>
+                        AI Readme Generator
+                      </h3>
+                    </div>
+                  ) : (
+                    <div className='flex items-center gap-2'>
+                      <span className='text-lg'>{activeContent?.icon}</span>
+                      {activeContent?.name}
+                    </div>
+                  )}
+
+                  <div className='flex items-center gap-5 '>
+                    <EditorButton
+                      aiActivated={aiActivated}
+                      setAiActivated={setAiActivated}
+                    />
                     <LoadDraft onLoadDraft={handleLoadDraft} />
                     <SaveDraft
                       sections={sections}
@@ -351,15 +370,19 @@ export default function ReadmeBuilder() {
                   </div>
                 </h3>
               </div>
-              <textarea
-                value={activeContent?.markdown || ''}
-                onChange={(e) => {
-                  if (!activeSection) return
-                  updateSection(activeSection, e.target.value)
-                }}
-                className='flex-1 p-6 font-mono text-sm resize-none focus:outline-none'
-                placeholder='Start typing your markdown...'
-              />
+              {aiActivated ? (
+                <LocalAiEditor />
+              ) : (
+                <textarea
+                  value={activeContent?.markdown || ''}
+                  onChange={(e) => {
+                    if (!activeSection) return
+                    updateSection(activeSection, e.target.value)
+                  }}
+                  className='flex-1 p-6 font-mono text-sm resize-none focus:outline-none'
+                  placeholder='Start typing your markdown...'
+                />
+              )}
             </div>
           )}
 
