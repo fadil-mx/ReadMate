@@ -2,13 +2,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
-  ArrowBigUp,
-  ArrowUp,
-  Globe,
-  Loader2,
-  Paperclip,
-  Sparkles,
-} from 'lucide-react'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+} from '@/components/ui/select'
+import { ArrowUp, Globe, Loader2, Paperclip, Sparkles } from 'lucide-react'
 import { Textarea } from '../ui/textarea'
 
 type Message = {
@@ -16,70 +17,65 @@ type Message = {
   content: string
   timestamp: Date
 }
+type models = {
+  id: string
+  object: string
+  created: number
+}
 
 const LocalAiEditor = () => {
-  const [data, setData] = useState<string | null>(null)
+  const [model, setModel] = useState<string>('qwen/qwen3-4b-2507')
+  const [models, setModels] = useState<models[]>([])
   const [input, setInput] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   //   const [error, setError] = useState('')
   //   const [streamedResponse, setStreamedResponse] = useState('')
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'user',
-      content:
-        'Generate a README for a weather app using Next.js and TypeScript',
-      timestamp: new Date(Date.now() - 300000), // 5 minutes ago
-    },
-    {
-      role: 'assistant',
-      content:
-        '✓ Generated complete README with 15 sections including Title, Features, Installation, Usage, and more.',
-      timestamp: new Date(Date.now() - 280000),
-    },
-    {
-      role: 'user',
-      content: 'Add more details to the Features section',
-      timestamp: new Date(Date.now() - 120000), // 2 minutes ago
-    },
-    {
-      role: 'assistant',
-      content:
-        '✓ Expanded Features section with 10 detailed feature descriptions including emojis and examples.',
-      timestamp: new Date(Date.now() - 100000),
-    },
-  ])
+  const [messages, setMessages] = useState<Message[]>([])
 
+  useEffect(() => {
+    const fetchModels = async () => {
+      const res = await fetch('/api/getModels')
+      const data = await res.json()
+      setModels(data.models.data)
+    }
+    fetchModels()
+  }, [])
+
+  // handle scrolling when new data arrives
   const chatEndRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   const handleGenerate = async () => {
     if (!input.trim() || isGenerating) return
-
     setIsGenerating(true)
 
-    // Add user message
     const userMessage: Message = {
       role: 'user',
       content: input,
       timestamp: new Date(),
     }
     setMessages((prev) => [...prev, userMessage])
-    setInput('') // Clear input
+    setInput('')
 
-    // Simulate AI response (replace with actual Ollama call)
-    setTimeout(() => {
-      const aiMessage: Message = {
-        role: 'assistant',
-        content:
-          '✓ Generated README with your specifications. Check the preview on the right!',
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, aiMessage])
-      setIsGenerating(false)
-    }, 2000)
+    const res = await fetch('/api/getairesponse', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ prompt: input, model }),
+    })
+    const data = await res.json()
+
+    const aiMessage: Message = {
+      role: 'assistant',
+      content: data.response,
+      timestamp: new Date(),
+    }
+
+    setMessages((prev) => [...prev, aiMessage])
+    setIsGenerating(false)
   }
 
   return (
@@ -127,9 +123,9 @@ const LocalAiEditor = () => {
         ) : (
           // Messages
           <>
-            {messages.map((msg, idx) => (
+            {messages.map((msg, index) => (
               <div
-                key={idx}
+                key={index}
                 className={`flex ${
                   msg.role === 'user' ? 'justify-end' : 'justify-start'
                 } animate-in fade-in slide-in-from-bottom-2 duration-300 w-full`}
@@ -147,7 +143,7 @@ const LocalAiEditor = () => {
                         msg.role === 'user' ? 'text-blue-100' : 'text-gray-500'
                       }`}
                     >
-                      {msg.role === 'user' ? '👤 You' : '🤖 AI'}
+                      {msg.role === 'user' ? '🧑 You' : '🤖 AI'}
                     </span>
                     <span
                       className={`text-xs ${
@@ -197,17 +193,52 @@ const LocalAiEditor = () => {
             - Features: User auth, real-time chat, file upload
             - Purpose: Social media app for developers'
           className=' min-h-[85px] max-h-48 resize-none'
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              handleGenerate()
+            }
+          }}
           disabled={isGenerating}
         />
         <div className=' flex justify-between items-center'>
           <div className='flex gap-5'>
-            <Button className='bg-purple-600 hover:bg-purple-700 rounded-full  justify-center'>
-              <Paperclip className='w-5 h-5 mr-2' />
-              Attach
-            </Button>
+            <Select
+              value={model}
+              onValueChange={(e) => {
+                setModel(e)
+              }}
+            >
+              <SelectTrigger className='w-[200px] bg-purple-600 hover:bg-purple-700 text-white justify-center overflow-hidden'>
+                <span className='text-white block truncate max-w-[160px] text-center'>
+                  {model}
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel className='text-violet-600 font-bold'>
+                    models
+                  </SelectLabel>
+
+                  {models.map((modelName, index) => (
+                    <SelectItem
+                      key={index}
+                      value={modelName.id}
+                      className='cursor-pointer focus:bg-purple-100 data-[state=checked]:bg-purple-200'
+                    >
+                      {modelName.id}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <Button className='bg-purple-600 hover:bg-purple-700 rounded-full  justify-center'>
               <Globe className='w-5 h-5 mr-2' />
               Search
+            </Button>
+            <Button className='bg-purple-600 hover:bg-purple-700 rounded-full  justify-center'>
+              <Paperclip className='w-5 h-5 mr-2' />
+              Attach
             </Button>
           </div>
           <Button
