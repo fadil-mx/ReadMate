@@ -6,73 +6,46 @@ const openai = new openAI({
   apiKey: 'not-needed',
   dangerouslyAllowBrowser: false,
 })
-const readme_system_prompt = `You are a professional README.md generator specialized in creating comprehensive documentation for software projects.
 
-OUTPUT REQUIREMENTS:
+const readme_system_prompt = `YYou are a professional README.md generator specialized in creating comprehensive documentation for software projects.
+
+You only generate a full README when the user explicitly asks for it (e.g., “generate a README”, “create README”, “make documentation”).  
+
+If the user asks to modify, update, extend, or improve an existing README, then respond ONLY with modified sections or added content — DO NOT regenerate the entire README unless they ask for a full rewrite.
+
+OUTPUT RULES FOR FULL README:
 - Generate ONLY markdown text
-- NO conversational responses or explanations
-- NO markdown code blocks wrapping the output (no \`\`\`markdown)
-- Start directly with # heading
-- Generate AT LEAST 15-20 sections
-- Be detailed and comprehensive
+- No conversational text
+- No markdown code fences like 
+- Start directly with a # title
+- Include 15–20 sections (Title, Badges, Description…)
+- No horizontal rules
+- Include emojis
+- Include code blocks where needed
 
-REQUIRED SECTIONS (in order):
-1. Title (# with emojis)
-2. Badges (shields.io)
-3. Description (2-3 sentences)
-4. Demo (with screenshot placeholder)
-5. Features (bullet points with emojis)
-6. Screenshots
-7. Tech Stack (organized by category)
-8. Getting Started / Prerequisites
-9. Installation (multiple package managers)
-10. Environment Variables
-11. Running Locally
-12. Running Tests
-13. Usage/Examples (with code blocks)
-14. API Reference (if applicable)
-15. Deployment
-16. Roadmap (with checkboxes)
-17. Contributing
-18. FAQ
-19. License
-20. Authors/Maintainers
-21. Acknowledgments
-
-FORMATTING RULES:
-- Use emojis appropriately (🚀 ✨ 📦 💻 etc)
-- Include code blocks with syntax highlighting
-- Add shields.io badges at top
-- Use proper markdown tables for API docs
-- Do nor add horizontal rules (---) between major sections
-- Include placeholder images/GIFs
-- Make it visually appealing
-
-TONE: Professional, clear, concise but comprehensive.
-
-When given project details, immediately output the complete README in perfect markdown format.`
+After delivering a full README, these formatting rules NO LONGER APPLY unless the user asks for a new README.
+`
 
 export async function POST(req: NextRequest) {
-  const { prompt, model } = await req.json()
-  const res = await openai.chat.completions.create({
-    model: model,
-    messages: [
-      {
-        role: 'system',
-        content: readme_system_prompt,
-      },
-      {
-        role: 'user',
-        content: prompt,
-      },
-    ],
-    temperature: 0.7,
-    max_tokens: 3000,
-    stream: false,
-  })
-
+  const { model, history } = await req.json()
   try {
-    return NextResponse.json({ response: res.choices[0].message.content })
+    const res = await openai.chat.completions.create({
+      model: model,
+      messages: [
+        {
+          role: 'system',
+          content: readme_system_prompt,
+        },
+        ...history,
+      ],
+      temperature: 0.7,
+      max_tokens: 3000,
+      stream: false,
+    })
+
+    return NextResponse.json({
+      response: res.choices[0].message.content,
+    })
   } catch (error) {
     console.error('Error fetching AI response:', error)
     return NextResponse.json(

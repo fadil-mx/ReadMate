@@ -9,8 +9,6 @@ import SaveDraft from '@/components/shared/SaveDraft'
 import LoadDraft from '@/components/shared/LoadDraft'
 import { DraftItemType } from '@/types/types'
 import LocalAiEditor from '@/components/local_ai_editor/LocalAiEditor'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import EditorButton from '@/components/shared/ai-EditorButton'
 
 export default function ReadmeBuilder() {
@@ -371,7 +369,7 @@ export default function ReadmeBuilder() {
                 </h3>
               </div>
               {aiActivated ? (
-                <LocalAiEditor />
+                <LocalAiEditor setsections={setSections} sections={sections} />
               ) : (
                 <textarea
                   value={activeContent?.markdown || ''}
